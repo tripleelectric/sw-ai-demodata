@@ -155,7 +155,9 @@ class ProductGenerator
         $prompt .= '- product count.' . PHP_EOL;
         $prompt .= '- product number code. should be 24 unique random alphanumeric' . PHP_EOL;
         $prompt .= '- name of the product.' . PHP_EOL;
-        $prompt .= '- description (about ' . $descriptionLength . ' characters).' . PHP_EOL;
+        $prompt .= '- description (MUST be at least ' . $descriptionLength . ' characters long). ' .
+            'Include realistic technical specs relevant to the product type ' .
+            '(e.g. dimensions, weight, materials, capacity, resolution, speed, compatibility).' . PHP_EOL;
         $prompt .= '- price value (no currency just number).' . PHP_EOL;
         $prompt .= '- EAN code.' . PHP_EOL;
         $prompt .= '- SEO description (max 100 characters).' . PHP_EOL;
