@@ -30,5 +30,9 @@
             <argument type="service" id="property_group_option.repository"/>
         </service>
 
+        <service id="AIDemoData\Repository\TagRepository" class="AIDemoData\Repository\TagRepository">
+            <argument type="service" id="tag.repository"/>
+        </service>
+
     </services>
 </container>

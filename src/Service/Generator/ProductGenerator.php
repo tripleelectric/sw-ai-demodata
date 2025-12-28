@@ -7,6 +7,7 @@ use AIDemoData\Repository\CurrencyRepository;
 use AIDemoData\Repository\ProductRepository;
 use AIDemoData\Repository\PropertyRepository;
 use AIDemoData\Repository\SalesChannelRepository;
+use AIDemoData\Repository\TagRepository;
 use AIDemoData\Repository\TaxRepository;
 use AIDemoData\Service\Media\ImageUploader;
 use AIDemoData\Service\OpenAI\Client;
@@ -52,6 +53,11 @@ class ProductGenerator
     private $repoProperties;
 
     /**
+     * @var TagRepository
+     */
+    private $repoTags;
+
+    /**
      * @var ImageUploader
      */
     private $imageUploader;
@@ -83,9 +89,12 @@ class ProductGenerator
      * @param SalesChannelRepository $repoSalesChannel
      * @param CurrencyRepository $repoCurrency
      * @param CategoryRepository $repoCategory
+     * @param PropertyRepository $repoPropertyGroup
+     * @param TagRepository $repoTags
      * @param ImageUploader $imageUploader
+     * @param string $kernelCacheDir
      */
-    public function __construct(Client $client, ProductRepository $repoProducts, TaxRepository $repoTaxes, SalesChannelRepository $repoSalesChannel, CurrencyRepository $repoCurrency, CategoryRepository $repoCategory, PropertyRepository $repoPropertyGroup, ImageUploader $imageUploader, string $kernelCacheDir)
+    public function __construct(Client $client, ProductRepository $repoProducts, TaxRepository $repoTaxes, SalesChannelRepository $repoSalesChannel, CurrencyRepository $repoCurrency, CategoryRepository $repoCategory, PropertyRepository $repoPropertyGroup, TagRepository $repoTags, ImageUploader $imageUploader, string $kernelCacheDir)
     {
         $this->openAI = $client;
         $this->repoProducts = $repoProducts;
@@ -94,6 +103,7 @@ class ProductGenerator
         $this->repoCurrency = $repoCurrency;
         $this->repoCategory = $repoCategory;
         $this->repoProperties = $repoPropertyGroup;
+        $this->repoTags = $repoTags;
         $this->imageUploader = $imageUploader;
         $this->kernelCacheDir = $kernelCacheDir;
 
@@ -311,6 +321,9 @@ class ProductGenerator
         # delete our temp file again
         unlink($imagePath);
 
+        // Ensure the AI Demo Data tag exists and get its ID
+        $tagId = $this->repoTags->ensureTagExists(Context::createDefaultContext());
+
         $productData = [
             'id' => $id,
             'name' => $name,
@@ -343,7 +356,10 @@ class ProductGenerator
             ],
             'coverId' => $coverId,
             'options' => [],
-            'properties' => []
+            'properties' => [],
+            'tags' => [
+                ['id' => $tagId]
+            ]
         ];
 
         if (!empty($categoryName)) {
