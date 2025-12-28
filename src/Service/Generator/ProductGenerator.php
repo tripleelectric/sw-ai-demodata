@@ -147,7 +147,8 @@ class ProductGenerator
             $this->callback->onProductGenerationStarted($maxCount);
         }
 
-        $prompt = 'Create a list of demo products with these properties, separated values with ";". Only write down values and no property names ' . PHP_EOL;
+        $prompt = 'Create a list of realistic demo products with these properties, separated values with ";". Only write down values and no property names. ' . PHP_EOL;
+        $prompt .= 'IMPORTANT: Generate creative, realistic product data that sounds like actual products. DO NOT use lorem ipsum, placeholder text, or generic filler content.' . PHP_EOL;
         $prompt .= PHP_EOL;
         $prompt .= 'the following properties should be generated.' . PHP_EOL;
         $prompt .= 'Every resulting line should be in the order and sort provided below:' . PHP_EOL;
@@ -156,8 +157,9 @@ class ProductGenerator
         $prompt .= '- product number code. should be 24 unique random alphanumeric' . PHP_EOL;
         $prompt .= '- name of the product.' . PHP_EOL;
         $prompt .= '- description (MUST be at least ' . $descriptionLength . ' characters long). ' .
-            'Include realistic technical specs relevant to the product type ' .
-            '(e.g. dimensions, weight, materials, capacity, resolution, speed, compatibility).' . PHP_EOL;
+            'Write compelling, realistic marketing copy with technical specs relevant to the product type ' .
+            '(e.g. dimensions, weight, materials, capacity, resolution, speed, compatibility). ' .
+            'Make it sound like a real product description from an actual online shop. NO lorem ipsum or placeholder text!' . PHP_EOL;
         $prompt .= '- price value (no currency just number).' . PHP_EOL;
         $prompt .= '- EAN code.' . PHP_EOL;
         $prompt .= '- SEO description (max 100 characters).' . PHP_EOL;

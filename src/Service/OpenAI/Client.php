@@ -57,7 +57,7 @@ class Client
         $params = [
             'model' => $this->textModel,
             'messages' => [
-                ['role' => 'system', 'content' => 'You are a helpful assistant and a professional when it comes to e-commerce data'],
+                ['role' => 'system', 'content' => 'You are a professional e-commerce copywriter creating realistic product data. NEVER use lorem ipsum, placeholder text, or generic filler content. Always generate authentic, creative, and believable product names, descriptions, and specifications that sound like real products from believable brands.'],
                 ['role' => 'user', 'content' => $prompt]
             ],
             'temperature' => 0.3,
