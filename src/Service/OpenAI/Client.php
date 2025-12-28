@@ -57,11 +57,11 @@ class Client
         $params = [
             'model' => $this->textModel,
             'messages' => [
-                ['role' => 'system', 'content' => 'You are a professional e-commerce copywriter creating realistic product data. NEVER use lorem ipsum, placeholder text, or generic filler content. Always generate authentic, creative, and believable product names, descriptions, and specifications that sound like real products from believable brands.'],
+                ['role' => 'system', 'content' => 'You are a senior technical product copywriter for a professional e-commerce platform. Your expertise is writing detailed, specification-rich product descriptions that convert browsers into buyers. Every description you write MUST include: concrete measurements (dimensions, weight), specific materials/components, performance metrics (speed, capacity, power), compatibility information, and key features with technical details. Write like a product engineer who understands marketing. NEVER use lorem ipsum, vague filler, or generic marketing fluff. Every sentence must contain specific, believable technical information.'],
                 ['role' => 'user', 'content' => $prompt]
             ],
-            'temperature' => 0.3,
-            'max_tokens' => 2000,
+            'temperature' => 0.5,
+            'max_tokens' => 4000,
             'top_p' => 1.0,
             'frequency_penalty' => 0.0,
             'presence_penalty' => 0.0,

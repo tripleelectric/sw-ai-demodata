@@ -167,9 +167,13 @@ class ProductGenerator
         $prompt .= '- product number code. should be 24 unique random alphanumeric' . PHP_EOL;
         $prompt .= '- name of the product.' . PHP_EOL;
         $prompt .= '- description (MUST be at least ' . $descriptionLength . ' characters long). ' .
-            'Write compelling, realistic marketing copy with technical specs relevant to the product type ' .
-            '(e.g. dimensions, weight, materials, capacity, resolution, speed, compatibility). ' .
-            'Make it sound like a real product description from an actual online shop. NO lorem ipsum or placeholder text!' . PHP_EOL;
+            'Write a detailed technical product description that includes ALL of the following where applicable: ' .
+            '1) Exact dimensions (e.g. 245 x 180 x 42mm), 2) Weight (e.g. 1.2kg), ' .
+            '3) Materials/build (e.g. aircraft-grade aluminum, tempered glass), ' .
+            '4) Technical specifications (e.g. 2.4GHz processor, 5000mAh battery, 120Hz refresh rate), ' .
+            '5) Connectivity/compatibility (e.g. USB-C, Bluetooth 5.2, works with iOS 15+), ' .
+            '6) Performance metrics (e.g. 50W output, 300 lumens, 40dB noise level). ' .
+            'Write in a professional tone like Amazon or a tech retailer. Use specific numbers and units. NO vague descriptions, NO lorem ipsum!' . PHP_EOL;
         $prompt .= '- price value (no currency just number).' . PHP_EOL;
         $prompt .= '- EAN code.' . PHP_EOL;
         $prompt .= '- SEO description (max 100 characters).' . PHP_EOL;
