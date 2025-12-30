@@ -157,31 +157,35 @@ class ProductGenerator
             $this->callback->onProductGenerationStarted($maxCount);
         }
 
-        $prompt = 'Create a list of realistic demo products with these properties, separated values with ";". Only write down values and no property names. ' . PHP_EOL;
+        $prompt = 'Create a list of realistic demo products. Each product on ONE line. Separate fields with "|||" (three pipe characters). Do NOT use semicolons as separators. Only write values, no property names.' . PHP_EOL;
         $prompt .= 'IMPORTANT: Generate creative, realistic product data that sounds like actual products. DO NOT use lorem ipsum, placeholder text, or generic filler content.' . PHP_EOL;
+        $prompt .= 'CRITICAL: Each line must have exactly 7 fields separated by ||| (so 6 ||| separators per line)' . PHP_EOL;
         $prompt .= PHP_EOL;
-        $prompt .= 'the following properties should be generated.' . PHP_EOL;
-        $prompt .= 'Every resulting line should be in the order and sort provided below:' . PHP_EOL;
+        $prompt .= 'the following 7 properties should be generated in this exact order:' . PHP_EOL;
         $prompt .= PHP_EOL;
-        $prompt .= '- product count.' . PHP_EOL;
-        $prompt .= '- product number code. should be 24 unique random alphanumeric' . PHP_EOL;
-        $prompt .= '- name of the product.' . PHP_EOL;
-        $prompt .= '- description (MUST be at least ' . $descriptionLength . ' characters long). ' .
+        $prompt .= '1. row number (1, 2, 3, etc.)' . PHP_EOL;
+        $prompt .= '2. name of the product (creative, realistic brand + product name)' . PHP_EOL;
+        $prompt .= '3. description (MUST be at least ' . $descriptionLength . ' characters long). ' .
             'Write a detailed technical product description that includes ALL of the following where applicable: ' .
-            '1) Exact dimensions (e.g. 245 x 180 x 42mm), 2) Weight (e.g. 1.2kg), ' .
-            '3) Materials/build (e.g. aircraft-grade aluminum, tempered glass), ' .
-            '4) Technical specifications (e.g. 2.4GHz processor, 5000mAh battery, 120Hz refresh rate), ' .
-            '5) Connectivity/compatibility (e.g. USB-C, Bluetooth 5.2, works with iOS 15+), ' .
-            '6) Performance metrics (e.g. 50W output, 300 lumens, 40dB noise level). ' .
+            'exact dimensions (e.g. 245 x 180 x 42mm), weight (e.g. 1.2kg), ' .
+            'materials/build (e.g. aircraft-grade aluminum, tempered glass), ' .
+            'technical specifications (e.g. 2.4GHz processor, 5000mAh battery, 120Hz refresh rate), ' .
+            'connectivity/compatibility (e.g. USB-C, Bluetooth 5.2, works with iOS 15+), ' .
+            'performance metrics (e.g. 50W output, 300 lumens, 40dB noise level). ' .
             'Write in a professional tone like Amazon or a tech retailer. Use specific numbers and units. NO vague descriptions, NO lorem ipsum!' . PHP_EOL;
-        $prompt .= '- price value (no currency just number).' . PHP_EOL;
-        $prompt .= '- EAN code.' . PHP_EOL;
-        $prompt .= '- SEO description (max 100 characters).' . PHP_EOL;
-        $prompt .= '- variant indicator (1 if variants make sense for the product, 0 if it does not make sense).' . PHP_EOL;
+        $prompt .= '4. price value (no currency, just the number like 79.99)' . PHP_EOL;
+        $prompt .= '5. EAN code (13 digits)' . PHP_EOL;
+        $prompt .= '6. SEO description (max 100 characters)' . PHP_EOL;
+        $prompt .= '7. variant indicator (1 if product should have variants like colors/sizes, 0 if not)' . PHP_EOL;
         $prompt .= PHP_EOL;
         $prompt .= 'Please only create exactly this number of products: ' . $maxCount . PHP_EOL;
         $prompt .= PHP_EOL;
-        $prompt .= 'The industry of the products should be: ' . $keywords;
+        $prompt .= 'The industry of the products should be: ' . $keywords . PHP_EOL;
+        $prompt .= PHP_EOL;
+        $prompt .= 'EXAMPLE FORMAT (follow this exact structure with 7 fields):' . PHP_EOL;
+        $prompt .= '1|||TechPro X500 Wireless Speaker|||The TechPro X500 delivers premium audio with 40W total output through dual 20W drivers. Dimensions: 180 x 85 x 75mm. Weight: 650g. Built with brushed aluminum housing and silicone base. Features Bluetooth 5.3 with aptX HD support, USB-C charging, and 3.5mm aux input. 8-hour battery life from 4000mAh cell. IPX5 water resistant. Frequency response: 60Hz-20kHz.|||129.99|||4012345678901|||Premium 40W wireless speaker with Bluetooth 5.3 and 8h battery|||1' . PHP_EOL;
+        $prompt .= PHP_EOL;
+        $prompt .= 'Now generate products (each on a single line, no extra text):';
 
 
         # now write our prompt to the cache dir
@@ -203,25 +207,27 @@ class ProductGenerator
             }
 
             try {
-                $parts = explode(';', $line);
+                $parts = explode('|||', $line);
 
+                // Need at least 7 parts (indices 0-6)
                 if (count($parts) < 7) {
-                    throw new \Exception('Product row is not complete');
+                    throw new \Exception('Product row is not complete (got ' . count($parts) . ' fields, need 7)');
                 }
 
                 $currentCount++;
 
                 $id = Uuid::randomHex();
-                $number = (string)$parts[1];
-                $name = (string)$parts[2];
-                $description = (string)$parts[3];
-                $price = (string)$parts[4];
-                $ean = (string)$parts[5];
-                $metaDescription = (string)$parts[6];
-                $isVariant = (bool)$parts[7];
+                // Generate our own unique product number to avoid duplicates
+                $number = 'AI-' . strtoupper(substr(md5($id . time()), 0, 12));
+                $name = trim((string)$parts[1]);
+                $description = trim((string)$parts[2]);
+                $price = trim((string)$parts[3]);
+                $ean = trim((string)$parts[4]);
+                $metaDescription = trim((string)$parts[5]);
+                $isVariant = isset($parts[6]) && trim($parts[6]) === '1';
 
                 if (empty($name)) {
-                    continue;
+                    throw new \Exception('Product name is empty');
                 }
 
                 if (empty($price)) {
